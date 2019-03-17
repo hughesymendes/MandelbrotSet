@@ -17,7 +17,6 @@ def calculate_if_is_in_mbot_set(Comp):
 	while Comp <= maxiter:
                 xmin, xmax, xn = -2.25, +0.75, 3000/2
                 ymin, ymax, yn = -1.25, +1.25, 2500/2
-                
                 Z = Z**2 + C
                 Z = C**2 + C
                 C**2 = (C**2 + C)
