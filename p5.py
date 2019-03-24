@@ -27,7 +27,7 @@ def p5jsMap(n, start1, stop1, start2, stop2):
 
 def apply_mandelbrot_set( my_canvas, a_start, a_end, b_start, b_end):
 
-    max_iterations = 10000
+    max_iterations = 250
     break_threshold = 16
 
     for x in range( 0, my_canvas.width ):
