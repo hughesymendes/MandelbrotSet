@@ -80,7 +80,7 @@ print("Starting Mandelbrot process")
 print("Processing...")
 
 my_canvas = Canvas( 800, 800 )
-apply_mandelbrot_set( my_canvas, -0.74877, -0.748727142857, 0.065053, 0.0650958571429 )
+apply_mandelbrot_set( my_canvas, -2.0, 2.0, -2.0, 2.0 )
 my_canvas.visualise()
 
 print("Completed Mandelbrot process")
