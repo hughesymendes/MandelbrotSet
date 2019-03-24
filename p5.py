@@ -7,14 +7,11 @@ class Canvas:
         self.width = width
         self.height = height
         self.background_colour = 255
-        self.im = Image.new('RGB',( self.width, self.height),( self.background_colour, self.background_colour, self.background_colour))
+        self.im = Image.new('HSV',( self.width, self.height),( self.background_colour, self.background_colour, self.background_colour))
         self.idraw = ImageDraw.Draw( self.im )
 
-    def setPixel( self, x, y, brightness):
-        opacity = 255
-        brightness = int( brightness )
-        fill_colour = ( brightness, brightness, brightness, opacity )
-        self.idraw.point( (x, y), fill_colour )
+    def setPixel( self, x, y, hue, saturation, value ):
+        self.idraw.point( [x, y], (hue, saturation, value) )
 
     def visualise( self ):
         self.im.show()
@@ -28,14 +25,9 @@ def p5jsMap(n, start1, stop1, start2, stop2):
 
 
 
-def apply_mandelbrot_set( my_canvas, start, stop ):
-    a_start = start
-    a_end = stop
+def apply_mandelbrot_set( my_canvas, a_start, a_end, b_start, b_end):
 
-    b_start = start
-    b_end = stop
-
-    max_iterations = 100
+    max_iterations = 10000
     break_threshold = 16
 
     for x in range( 0, my_canvas.width ):
@@ -67,17 +59,18 @@ def apply_mandelbrot_set( my_canvas, start, stop ):
                 if break_value > break_threshold:
                     break
 
-            # Calculate the brightness for this pixel
-            # Could be improved by generating colour instead
-            if (n == max_iterations):
-                brightness = 0
-            else:
-                brightness = p5jsMap( n, 0.0, max_iterations, 0.0, 1.0 );
-                brightness = p5jsMap( math.sqrt( brightness ), 0.0, 1.0, 0.0, 255.0 );
+            # Calculate the hue and value for this pixel
+            hue = int(255 * n / max_iterations)
+            saturation = 255
 
-            # Set the pixel at x,y to the calculated brightness level
-            my_canvas.setPixel( x, y, brightness)
+            value = 0
+            if n < max_iterations:
+                value = 255 
+            
+            # Set the pixel value 
+            my_canvas.setPixel( x, y, hue, saturation, value )
 
+            # print "x=" + str(x) + " y=" + str(y) + " a=" + str(a) + " b=" + str(b) + " h=" + str(hue) + " s=" + str(saturation) + " v=" + str(value)
 
 
 # This is the control code
@@ -86,8 +79,8 @@ def apply_mandelbrot_set( my_canvas, start, stop ):
 print("Starting Mandelbrot process")
 print("Processing...")
 
-my_canvas = Canvas( 600, 600 )
-apply_mandelbrot_set( my_canvas, 0.25, 0.50 )
+my_canvas = Canvas( 800, 800 )
+apply_mandelbrot_set( my_canvas, -0.74877, -0.748727142857, 0.065053, 0.0650958571429 )
 my_canvas.visualise()
 
 print("Completed Mandelbrot process")
