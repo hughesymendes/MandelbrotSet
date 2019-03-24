@@ -27,7 +27,7 @@ def p5jsMap(n, start1, stop1, start2, stop2):
 
 def apply_mandelbrot_set( my_canvas, a_start, a_end, b_start, b_end):
 
-    max_iterations = 250
+    max_iterations = 200
     break_threshold = 16
 
     for x in range( 0, my_canvas.width ):
@@ -60,12 +60,12 @@ def apply_mandelbrot_set( my_canvas, a_start, a_end, b_start, b_end):
                     break
 
             # Calculate the hue and value for this pixel
-            hue = int(255 * n / max_iterations)
+            hue = int((360 * n) / max_iterations )
             saturation = 255
 
             value = 0
-            if n < max_iterations:
-                value = 255 
+            if n < (max_iterations - 1):
+                value = 255
             
             # Set the pixel value 
             my_canvas.setPixel( x, y, hue, saturation, value )
