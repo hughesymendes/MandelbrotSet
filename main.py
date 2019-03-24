@@ -1,42 +1,87 @@
-import numpy as np
-
-def calculate_if_is_in_mbot_set(Comp):
-	# We receive a complex number as an input and return a 
-	# boolean value indicating if it is in the Mandelbrot set.
-
-	# Spoof by returning true for even numbers
-
-	Z=np.zeros(C.shape, np.complex64)
-	Re = np.linspace(xmin, xmax, xn, dtype=np.float32)
-	Imag = np.linspace(ymix, ymax, yn, dtype=np.float32)
-        C = (Re + Imag)
-        C**2 = Re**2 - Imag**2 + 2*Re*Imag
-        Z = 0.0
-        C = -1
-        maxiter = 100
-	while Comp <= maxiter:
-                xmin, xmax, xn = -2.25, +0.75, 3000/2
-                ymin, ymax, yn = -1.25, +1.25, 2500/2
-                Z = Z**2 + C
-                Z = C**2 + C
-                C**2 = (C**2 + C)
-                Z = C**2 + C
-		return True
-	else:
-                break
-                return False
+from PIL import Image, ImageDraw
+import math
 
 
-def visualise_answer( is_in_set ):
-	# We visualise the result of an iteration
+class Canvas:
+    def __init__(self, width, height):
+        self.width = width
+        self.height = height
+        self.background_colour = 255
+        self.im = Image.new('HSV',( self.width, self.height),( self.background_colour, self.background_colour, self.background_colour))
+        self.idraw = ImageDraw.Draw( self.im )
 
-	if is_in_mbot_set: 
-		 print str(Comp) + " Is in the Mandelbrot set"
-	else:
-                 print str(Comp) + " Is not in the Mandelbrot set"
-                 
-while Comp <= maxiter:
+    def setPixel( self, x, y, hue, saturation, value ):
+        self.idraw.point( [x, y], (hue, saturation, value) )
 
-  is_in_mbot_set = calculate_if_is_in_mbot_set( Comp )
-  visualise_answer( is_in_mbot_set )
-  Comp = Comp + 1
+    def visualise( self ):
+        self.im.show()
+
+
+def p5jsMap(n, start1, stop1, start2, stop2):
+    # Mock functionality of the p5.js map() function
+    # converts n from the start1/stop1 scale to the start2/stop2 scale
+
+    return float( ( ( ( stop2 - start2 ) / ( stop1 - start1 ) ) * n ) + start2 )
+
+
+
+def apply_mandelbrot_set( my_canvas, a_start, a_end, b_start, b_end):
+
+    max_iterations = 250
+    break_threshold = 16
+
+    for x in range( 0, my_canvas.width ):
+        for y in range( 0, my_canvas.height ):
+
+            # Compute the values of a and b we will use to render a colour at position x,y on the canvas
+            # The a and b values are the values tested to see if they remain bounded or tend to infinity
+            a = p5jsMap( x, 0, my_canvas.width, a_start, a_end )
+            b = p5jsMap( y, 0, my_canvas.height, b_start, b_end )
+
+            # Remember the original values
+            ca = a;
+            cb = b;
+
+            # Run through iterations and calculate solutions
+            n = 0;
+            for n in range( 0, max_iterations ):
+
+                # Do the math
+                # (a^2 - b^2) + 2abi
+                aa = a * a - b * b
+                bb = 2 * a * b
+                a = aa + ca
+                b = bb + cb
+
+                # Does this tend to infinity?
+                # If so jump out of this pixel
+                break_value = a * a + b * b
+                if break_value > break_threshold:
+                    break
+
+            # Calculate the hue and value for this pixel
+            hue = int(255 * n / max_iterations)
+            saturation = 255
+
+            value = 0
+            if n < max_iterations:
+                value = 255 
+            
+            # Set the pixel value 
+            my_canvas.setPixel( x, y, hue, saturation, value )
+
+            # print "x=" + str(x) + " y=" + str(y) + " a=" + str(a) + " b=" + str(b) + " h=" + str(hue) + " s=" + str(saturation) + " v=" + str(value)
+
+
+# This is the control code
+# Everything above are just definitions
+
+print("Starting Mandelbrot process")
+print("Processing...")
+
+my_canvas = Canvas( 800, 800 )
+apply_mandelbrot_set( my_canvas, -2.0, 2.0, -2.0, 2.0 )
+my_canvas.visualise()
+
+print("Completed Mandelbrot process")
+
